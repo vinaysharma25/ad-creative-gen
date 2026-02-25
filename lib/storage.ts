@@ -1,7 +1,8 @@
-import type { BrandDNA } from '@/lib/types'
+import type { BrandDNA, SavedCampaign } from '@/lib/types'
 
 const BRANDS_KEY = 'ad-creative-gen:brands'
 const ACTIVE_BRAND_KEY = 'ad-creative-gen:activeBrandId'
+const campaignKey = (brandId: string) => `ad-creative-gen:campaign:${brandId}`
 
 export const storage = {
   getBrands(): BrandDNA[] {
@@ -67,5 +68,23 @@ export const storage = {
     const brand = JSON.parse(json) as BrandDNA
     storage.saveBrand(brand)
     return brand
+  },
+
+  getCampaign(brandId: string): SavedCampaign | null {
+    if (typeof window === 'undefined') return null
+    try {
+      const raw = localStorage.getItem(campaignKey(brandId))
+      return raw ? (JSON.parse(raw) as SavedCampaign) : null
+    } catch {
+      return null
+    }
+  },
+
+  saveCampaign(campaign: SavedCampaign): void {
+    localStorage.setItem(campaignKey(campaign.brandId), JSON.stringify(campaign))
+  },
+
+  clearCampaign(brandId: string): void {
+    localStorage.removeItem(campaignKey(brandId))
   },
 }

@@ -47,9 +47,10 @@ type FormValues = z.infer<typeof schema>
 interface CampaignBriefFormProps {
   onSubmit: (brief: CampaignBrief, refs: CampaignReferenceImages) => void
   isGenerating?: boolean
+  savedBrief?: CampaignBrief
 }
 
-export function CampaignBriefForm({ onSubmit, isGenerating }: CampaignBriefFormProps) {
+export function CampaignBriefForm({ onSubmit, isGenerating, savedBrief }: CampaignBriefFormProps) {
   const [modelPreview, setModelPreview] = useState<string | undefined>()
   const [productPreview, setProductPreview] = useState<string | undefined>()
   const modelRef = useRef<HTMLInputElement>(null)
@@ -58,9 +59,14 @@ export function CampaignBriefForm({ onSubmit, isGenerating }: CampaignBriefFormP
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      platform: 'meta_feed_square',
-      objective: 'conversions',
-      additionalContext: '',
+      platform: savedBrief?.platform ?? 'meta_feed_square',
+      objective: savedBrief?.objective ?? 'conversions',
+      productName: savedBrief?.productName ?? '',
+      productDescription: savedBrief?.productDescription ?? '',
+      audienceSegment: savedBrief?.audienceSegment ?? '',
+      emotionalAngle: savedBrief?.emotionalAngle ?? '',
+      offer: savedBrief?.offer ?? '',
+      additionalContext: savedBrief?.additionalContext ?? '',
     },
   })
 
@@ -129,7 +135,7 @@ export function CampaignBriefForm({ onSubmit, isGenerating }: CampaignBriefFormP
         <CardContent className="space-y-4">
           <div>
             <Label>Platform</Label>
-            <Select defaultValue="meta_feed_square" onValueChange={v => setValue('platform', v as Platform)}>
+            <Select defaultValue={savedBrief?.platform ?? 'meta_feed_square'} onValueChange={v => setValue('platform', v as Platform)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -142,7 +148,7 @@ export function CampaignBriefForm({ onSubmit, isGenerating }: CampaignBriefFormP
           </div>
           <div>
             <Label>Campaign Objective</Label>
-            <Select defaultValue="conversions" onValueChange={v => setValue('objective', v as CampaignBrief['objective'])}>
+            <Select defaultValue={savedBrief?.objective ?? 'conversions'} onValueChange={v => setValue('objective', v as CampaignBrief['objective'])}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>

@@ -113,3 +113,10 @@ export interface RefinementRequest {
   previousOutput: AdCreativeOutput
   feedback: SectionFeedback
 }
+
+export interface SavedCampaign {
+  brandId: string
+  brief: CampaignBrief
+  output: AdCreativeOutput
+  savedAt: string  // ISO timestamp
+}
