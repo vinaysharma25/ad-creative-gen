@@ -4,7 +4,7 @@ import { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Upload, X } from 'lucide-react'
+import { Upload, X, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -46,9 +46,10 @@ type FormValues = z.infer<typeof schema>
 
 interface CampaignBriefFormProps {
   onSubmit: (brief: CampaignBrief, refs: CampaignReferenceImages) => void
+  isGenerating?: boolean
 }
 
-export function CampaignBriefForm({ onSubmit }: CampaignBriefFormProps) {
+export function CampaignBriefForm({ onSubmit, isGenerating }: CampaignBriefFormProps) {
   const [modelPreview, setModelPreview] = useState<string | undefined>()
   const [productPreview, setProductPreview] = useState<string | undefined>()
   const modelRef = useRef<HTMLInputElement>(null)
@@ -182,7 +183,10 @@ export function CampaignBriefForm({ onSubmit }: CampaignBriefFormProps) {
         </CardContent>
       </Card>
 
-      <Button type="submit" className="w-full">Generate Ad Creative</Button>
+      <Button type="submit" disabled={isGenerating} className="w-full flex items-center gap-2">
+        {isGenerating && <RefreshCw className="h-3.5 w-3.5 animate-spin" />}
+        {isGenerating ? 'Generating…' : 'Generate Ad Creative'}
+      </Button>
     </form>
   )
 }
